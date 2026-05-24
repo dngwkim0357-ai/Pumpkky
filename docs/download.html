@@ -90,6 +90,16 @@ p.sub{font-size:17px;color:var(--fg-3);max-width:600px;margin:0 auto 56px;
 .spec .row-cta .eta{margin-top:8px;color:var(--fg-4);font-family:var(--mono);
                     font-size:11px;display:block}
 
+/* ── Release notes section ── */
+.release-section{margin-top:64px;padding-top:48px;border-top:1px solid var(--line);text-align:center}
+.release-section h2{font-size:24px;font-weight:700;margin-bottom:8px}
+.release-cta{display:inline-flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:8px}
+.btn-ghost{display:inline-flex;align-items:center;gap:6px;
+           padding:12px 22px;border-radius:8px;font-size:14px;font-weight:600;
+           background:transparent;color:var(--fg);border:1px solid var(--line-hi);
+           transition:border-color .15s,color .15s,transform .12s}
+.btn-ghost:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-1px)}
+
 /* ── Git clone section ── */
 .git-section{margin-top:64px;padding-top:48px;border-top:1px solid var(--line)}
 .git-section .lab{text-align:center;margin-bottom:8px}
@@ -209,10 +219,29 @@ footer a:hover{color:var(--orange)}
 
   </div>
 
+  <!-- ── Release notes link ── -->
+  <section class="release-section">
+    <p class="eyebrow lab">// Changelog</p>
+    <h2>リリースノート</h2>
+    <p class="sub2">
+      最新バージョン、変更履歴、過去ビルドのアーカイブ。
+    </p>
+    <div class="release-cta">
+      <a class="btn-ghost"
+         href="https://github.com/dngwkim0357-ai/Pumpkky/releases">
+        全リリースを見る (GitHub) →
+      </a>
+      <a class="btn-ghost"
+         href="https://github.com/dngwkim0357-ai/Pumpkky/releases/tag/v0.1.0-mvp">
+        v0.1.0-mvp ノート →
+      </a>
+    </div>
+  </section>
+
   <!-- ── Git clone ── -->
   <section class="git-section">
     <p class="eyebrow lab">// Or build it yourself</p>
-    <h2>ソースから build</h2>
+    <h2>ソースから build (Git Clone)</h2>
     <p class="sub2">
       OS を問わず誰でも。binary を信用しない方も、開発に参加したい方も、こちらへ。
     </p>
