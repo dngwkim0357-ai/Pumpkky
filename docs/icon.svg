@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Pumpkky">
+  <defs>
+    <linearGradient id="pmp" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f08c33"/>
+      <stop offset="55%" stop-color="#e37e29"/>
+      <stop offset="100%" stop-color="#b85f1d"/>
+    </linearGradient>
+    <linearGradient id="stem" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3d6630"/>
+      <stop offset="100%" stop-color="#274a1f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- stem (curved cylinder) -->
+  <path d="M92 60 Q96 36 108 36 Q120 36 116 60 Z" fill="url(#stem)"/>
+
+  <!-- pumpkin body: 5 stacked ellipses give the ribbed silhouette -->
+  <ellipse cx="100" cy="128" rx="82" ry="68" fill="url(#pmp)"/>
+  <ellipse cx="63"  cy="128" rx="25" ry="62" fill="#c96d23" opacity="0.55"/>
+  <ellipse cx="137" cy="128" rx="25" ry="62" fill="#c96d23" opacity="0.55"/>
+  <ellipse cx="100" cy="128" rx="18" ry="64" fill="#d77324" opacity="0.45"/>
+
+  <!-- subtle rib highlight curves -->
+  <path d="M28 118 Q100 150 172 118" stroke="#a85318" stroke-width="2" fill="none" opacity="0.35"/>
+  <path d="M36 156 Q100 184 164 156" stroke="#a85318" stroke-width="2" fill="none" opacity="0.35"/>
+
+  <!-- jack-o-lantern face — triangle eyes + zigzag mouth -->
+  <polygon points="62,116 80,140 44,140" fill="#1a0d05"/>
+  <polygon points="138,116 156,140 120,140" fill="#1a0d05"/>
+  <path d="M52 162
+           L70 174 L82 162 L96 176 L114 162 L128 176 L140 162 L150 174
+           L150 184 L52 184 Z"
+        fill="#1a0d05"/>
+</svg>

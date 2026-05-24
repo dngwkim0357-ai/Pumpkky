@@ -4,88 +4,111 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Download Pumpkky</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
-  :root { --orange:#e37e29; --bg:#0d0d0d; --fg:#e8e8e8; --muted:#a0a0a0; }
-  body { margin:0; background:var(--bg); color:var(--fg);
-         font:14px/1.6 -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
-  main { max-width:680px; margin:0 auto; padding:60px 24px; }
-  h1 { color:var(--orange); font-size:42px; margin:0 0 8px; }
-  h2 { color:var(--orange); margin-top:36px; }
-  .tagline { color:var(--muted); margin-bottom:28px; }
-  .cta { margin:32px 0; }
-  .cta a.primary { display:inline-block; background:var(--orange); color:#1a1a1a;
-           padding:18px 32px; border-radius:8px; text-decoration:none;
-           font-weight:700; font-size:18px; }
-  .cta a.secondary { display:inline-block; color:var(--orange);
-           padding:18px 16px; text-decoration:none; font-size:14px; }
-  .cta a.primary:hover { background:#c96d23; }
-  pre { background:#1a1a1a; padding:16px; border-radius:6px; overflow-x:auto;
-        border-left:3px solid var(--orange); }
-  code { font-family:"JetBrains Mono", monospace; font-size:12px; }
-  a { color:var(--orange); }
-  .warn { background:#332a18; padding:12px 16px; border-left:3px solid var(--orange);
-          border-radius:4px; margin:24px 0; }
-  .meta { color:var(--muted); font-size:12px; margin-top:6px; }
-  ol li, ul li { margin:6px 0; }
+:root{--orange:#e37e29;--orange-hi:#f08c33;--bg:#0a0a0a;--bg-alt:#121212;
+      --panel:#181818;--line:#232323;--fg:#e8e8e8;--fg-dim:#a0a0a0;--fg-muted:#666;
+      --mono:"JetBrains Mono","SF Mono",ui-monospace,monospace;
+      --sans:-apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px;line-height:1.7}
+a{color:var(--orange);text-decoration:none}
+a:hover{color:var(--orange-hi)}
+code,pre{font-family:var(--mono)}
+nav{position:sticky;top:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;
+           max-width:1080px;margin:0 auto;padding:14px 24px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--fg)}
+.brand img{width:28px;height:28px}
+.brand-name{font-weight:700;font-size:18px}
+.nav-links{display:flex;gap:24px;font-size:14px}
+.nav-links a{color:var(--fg-dim)}
+.nav-links a:hover{color:var(--orange)}
+main{max-width:720px;margin:0 auto;padding:80px 24px}
+h1{font-size:48px;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px}
+.tag{font-family:var(--mono);color:var(--fg-dim);margin-bottom:40px}
+h2{font-size:24px;color:var(--orange);margin:48px 0 16px;font-weight:700}
+p{color:var(--fg-dim);margin-bottom:14px}
+.cta{margin:32px 0 16px}
+.primary{display:inline-block;background:var(--orange);color:#1a0d05;
+         padding:18px 32px;border-radius:8px;font-weight:700;font-size:16px;
+         transition:transform 0.15s,background 0.15s}
+.primary:hover{background:var(--orange-hi);color:#1a0d05;transform:translateY(-2px)}
+.secondary{display:inline-block;color:var(--orange);padding:18px 16px;font-size:14px}
+.meta{font-family:var(--mono);color:var(--fg-muted);font-size:12px;margin-top:8px}
+pre{background:#000;border:1px solid var(--line);border-left:3px solid var(--orange);
+    padding:18px 22px;border-radius:8px;overflow-x:auto;margin:16px 0;font-size:13px;line-height:1.7}
+.warn{background:#1e1610;border-left:3px solid var(--orange);padding:14px 18px;
+      border-radius:4px;margin:24px 0;color:var(--fg-dim)}
+.warn strong{color:var(--orange)}
+ol{padding-left:24px;color:var(--fg-dim);line-height:2}
+ol li strong{color:var(--fg)}
 </style>
 </head>
 <body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="brand" href="./"><img src="favicon.svg" alt=""><span class="brand-name">Pumpkky</span></a>
+    <div class="nav-links">
+      <a href="./">Home</a>
+      <a href="https://github.com/dngwkim0357-ai/Pumpkky">GitHub</a>
+    </div>
+  </div>
+</nav>
+
 <main>
-  <h1>Download Pumpkky</h1>
-  <p class="tagline">macOS 13 (Ventura) or later, Apple Silicon (arm64).</p>
+  <h1>Download</h1>
+  <p class="tag">$ macOS 13+ · arm64 · ~425 KB dmg</p>
 
   <div class="cta">
     <a class="primary" href="https://github.com/dngwkim0357-ai/Pumpkky/releases/latest/download/Pumpkky.dmg">
-      ⬇ Download Pumpkky.dmg
+      ↓ Pumpkky.dmg
     </a>
-    <a class="secondary" href="https://github.com/dngwkim0357-ai/Pumpkky/releases">
-      Release notes / older versions →
-    </a>
-    <p class="meta">
-      Stable URL — always the latest release.
-      Direct dmg, no redirect to a page.
-    </p>
+    <a class="secondary" href="https://github.com/dngwkim0357-ai/Pumpkky/releases">All releases →</a>
+    <p class="meta">stable URL — always the latest</p>
   </div>
 
   <div class="warn">
-    <strong>Unsigned binary.</strong> Pumpkky は Apple Developer ID で codesign / notarize していません
-    (= Ghostty 哲学 + コスト軽量化の意図的な選択)。初回起動時に Gatekeeper の警告が出ます。
+    <strong>Unsigned.</strong> We don't pay Apple's $99/year Developer fee — a
+    deliberate Ghostty-philosophy choice. First launch needs a Gatekeeper bypass
+    (right-click → Open), which is a 10-second one-time step.
   </div>
 
-  <h2>Install (Ghostty 流の素直な手順)</h2>
+  <h2>Install</h2>
   <ol>
-    <li>上の <strong>Pumpkky.dmg</strong> ボタンで dmg を DL</li>
-    <li>dmg を開く → <strong>Pumpkky.app</strong> を <code>/Applications</code> にドラッグ</li>
-    <li>初回 double-click で <strong>「開発元未確認」警告</strong>が出る</li>
-    <li>解除方法 A: Finder で <strong>右クリック → 開く</strong> → ダイアログで「開く」</li>
-    <li>解除方法 B: <code>System Settings → Privacy &amp; Security</code> →
-        下にスクロール → <code>Open Anyway</code></li>
-    <li>2 回目以降は普通に double-click で起動</li>
+    <li>Click <strong>↓ Pumpkky.dmg</strong> above.</li>
+    <li>Open the dmg. Drag <strong>Pumpkky.app</strong> to <code>/Applications</code>.</li>
+    <li>First launch — <strong>right-click Pumpkky.app → Open</strong> → confirm in the dialog.</li>
+    <li>From the second launch onwards, just double-click.</li>
   </ol>
 
-  <h2>Update (MVP: 手動)</h2>
-  <p>現状の MVP は <strong>手動 DL 方式</strong>です:</p>
-  <ol>
-    <li>このページに来て新しい <strong>Pumpkky.dmg</strong> を DL</li>
-    <li>古い <code>/Applications/Pumpkky.app</code> を削除 (or 上書き)</li>
-    <li>設定 (<code>~/.config/ghostty-editor/</code>) は保持されます</li>
-  </ol>
-  <p>v1.0 で <a href="https://sparkle-project.org/">Sparkle</a> 統合 (アプリ内通知 + 1-click 更新) 予定。
-     Ghostty も Sparkle を採用しています。</p>
+  <h2>If it still won't open</h2>
+  <p>macOS sometimes silently blocks unsigned dmgs. From a terminal:</p>
+<pre>xattr -cr /Applications/Pumpkky.app
+codesign --force --deep --sign - /Applications/Pumpkky.app
+open /Applications/Pumpkky.app</pre>
+
+  <h2>Update</h2>
+  <p>MVP: <strong>manual</strong>. Come back here, download the new dmg, drop it
+     over the old one. Your config in <code>~/.config/ghostty-editor/</code> survives.</p>
+  <p>v1.0 will integrate <a href="https://sparkle-project.org/">Sparkle</a> for
+     in-app "Check for Updates" (the same framework Ghostty uses).</p>
 
   <h2>Uninstall</h2>
-<pre><code>rm -rf /Applications/Pumpkky.app
-rm -rf ~/.config/ghostty-editor    # 設定も消す場合
-rm -rf ~/.local/share/ghostty-editor  # cache/logs</code></pre>
-  <p>アカウントもサーバもないので、これで痕跡ゼロ。</p>
+<pre>rm -rf /Applications/Pumpkky.app
+rm -rf ~/.config/ghostty-editor       <span style="color:var(--fg-muted)"># config</span>
+rm -rf ~/.local/share/ghostty-editor  <span style="color:var(--fg-muted)"># cache/logs</span></pre>
+  <p>No account, no server, no leftover analytics. Zero trace.</p>
 
-  <h2>Don't trust the binary?</h2>
-  <p>Build from source ↓ (ソース完全公開、submodule で Ghostty 本体も透明)</p>
-<pre><code>git clone --recursive https://github.com/dngwkim0357-ai/Pumpkky
+  <h2>Build from source</h2>
+<pre><span style="color:var(--fg-muted)"># requires: Xcode (full), brew install zig</span>
+git clone --recursive https://github.com/dngwkim0357-ai/Pumpkky
 cd Pumpkky
 ./scripts/build-macos.sh
-open dist/Pumpkky.app</code></pre>
-  <p class="meta">Requirements: Xcode (full), Zig 0.16+ (<code>brew install zig</code>).</p>
+open dist/Pumpkky.app</pre>
 </main>
+
 </body>
 </html>

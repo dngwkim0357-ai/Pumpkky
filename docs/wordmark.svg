@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" role="img" aria-label="Pumpkky">
+  <defs>
+    <linearGradient id="wp" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f08c33"/>
+      <stop offset="100%" stop-color="#c96d23"/>
+    </linearGradient>
+  </defs>
+  <!-- mini pumpkin -->
+  <g transform="translate(4, 8)">
+    <path d="M19 12 Q20 4 24 4 Q28 4 27 12 Z" fill="#3d6630"/>
+    <ellipse cx="23" cy="30" rx="20" ry="18" fill="url(#wp)"/>
+    <polygon points="15,27 22,36 8,36"  fill="#1a0d05"/>
+    <polygon points="31,27 38,36 24,36" fill="#1a0d05"/>
+    <path d="M11 41 L17 45 L21 41 L25 45 L29 41 L33 45 L35 41 L35 46 L11 46 Z" fill="#1a0d05"/>
+  </g>
+  <!-- wordmark text -->
+  <text x="60" y="40" font-family="-apple-system, BlinkMacSystemFont, system-ui, sans-serif"
+        font-size="32" font-weight="700" fill="#e8e8e8" letter-spacing="-1">
+    Pumpkky
+  </text>
+</svg>
