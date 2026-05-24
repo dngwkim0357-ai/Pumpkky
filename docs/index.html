@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pumpkky — A lightweight code editor in the Ghostty spirit</title>
-<meta name="description" content="Pumpkky is a macOS native code editor built on top of Ghostty's terminal engine. Zig core + Swift AppKit UI. No Electron, no account, no telemetry.">
+<meta name="description" content="macOS native code editor on top of Ghostty's terminal engine. Zig core + Swift AppKit UI. No Electron, no account, no telemetry.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 :root{
@@ -12,96 +12,124 @@
   --orange-hi:#f08c33;
   --orange-lo:#b85f1d;
   --bg:#0a0a0a;
-  --bg-alt:#121212;
+  --bg-alt:#0f0f0f;
   --panel:#181818;
   --line:#232323;
-  --fg:#e8e8e8;
+  --fg:#f5f5f5;
   --fg-dim:#a0a0a0;
   --fg-muted:#666;
-  --mono:"JetBrains Mono","SF Mono",ui-monospace,Menlo,Consolas,monospace;
+  --mono:"JetBrains Mono","SF Mono",ui-monospace,Menlo,monospace;
   --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter",system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{background:var(--bg);color:var(--fg);font-family:var(--sans);
-          font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
-a{color:var(--orange);text-decoration:none}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);
+     font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:var(--orange);text-decoration:none;transition:color .15s}
 a:hover{color:var(--orange-hi)}
-code,pre,.mono{font-family:var(--mono)}
-.container{max-width:880px;margin:0 auto;padding:0 24px}
 
 /* ── nav ── */
-nav{position:sticky;top:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line);z-index:10}
+nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,0.85);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);z-index:100;height:56px}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;
-           max-width:1080px;margin:0 auto;padding:14px 24px}
+           max-width:1080px;margin:0 auto;padding:14px 24px;height:100%}
 .brand{display:flex;align-items:center;gap:10px;color:var(--fg)}
 .brand img{width:28px;height:28px}
 .brand-name{font-weight:700;font-size:18px;letter-spacing:-0.3px}
-.nav-links{display:flex;gap:24px;font-size:14px}
-.nav-links a{color:var(--fg-dim)}
-.nav-links a:hover{color:var(--orange)}
+.nav-links{display:flex;gap:8px;font-size:14px;align-items:center}
+.nav-links a{color:var(--fg-dim);padding:6px 14px;border-radius:6px;transition:all .15s}
+.nav-links a:hover{color:var(--orange);background:rgba(227,126,41,0.08)}
+.nav-links a.cta-primary{background:var(--orange);color:#1a0d05;font-weight:600}
+.nav-links a.cta-primary:hover{background:var(--orange-hi);color:#1a0d05}
 
-/* ── hero ── */
-.hero{padding:120px 24px 80px;text-align:center;border-bottom:1px solid var(--line)}
-.hero-icon{width:160px;height:160px;margin:0 auto 32px;
-           filter:drop-shadow(0 12px 32px rgba(227,126,41,0.25))}
-.hero h1{font-size:84px;font-weight:800;letter-spacing:-2.5px;line-height:1;
-         color:var(--fg);margin-bottom:16px}
-.hero h1 .accent{color:var(--orange)}
-.hero-tag{font-family:var(--mono);font-size:18px;color:var(--fg-dim);
-          margin-bottom:12px}
-.hero-tag .prompt{color:var(--orange)}
-.hero-sub{font-size:20px;color:var(--fg-dim);max-width:560px;margin:0 auto 48px}
-.hero-cta{display:inline-flex;align-items:center;gap:8px;
-          background:var(--orange);color:#1a0d05;
-          padding:16px 32px;border-radius:8px;font-weight:700;font-size:16px;
-          transition:transform 0.15s, background 0.15s}
-.hero-cta:hover{background:var(--orange-hi);transform:translateY(-2px);color:#1a0d05}
-.hero-cta-sub{margin-top:16px;font-family:var(--mono);font-size:12px;color:var(--fg-muted)}
-.hero-cta-sub a{color:var(--fg-muted);border-bottom:1px dotted var(--fg-muted)}
+/* ── scenes ── */
+.scene{min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+       align-items:center;padding:120px 24px 80px;text-align:center;position:relative}
+.scene-inner{max-width:1080px;width:100%}
+.eyebrow{font-family:var(--mono);font-size:13px;color:var(--orange);
+         letter-spacing:0.5px;text-transform:uppercase;margin-bottom:20px}
+.scene h1{font-size:clamp(48px,8vw,104px);font-weight:800;letter-spacing:-3px;
+          line-height:1;margin-bottom:24px}
+.scene h1 .accent{
+  background:linear-gradient(180deg,var(--orange-hi),var(--orange-lo));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.scene h2{font-size:clamp(36px,5.5vw,68px);font-weight:800;letter-spacing:-2px;
+          line-height:1.05;margin-bottom:20px}
+.scene .sub{font-size:clamp(18px,2vw,22px);color:var(--fg-dim);
+            max-width:640px;margin:0 auto 40px;line-height:1.5}
 
-/* ── section ── */
-section.body{padding:80px 24px;border-bottom:1px solid var(--line)}
-section.body:nth-of-type(even){background:var(--bg-alt)}
-section.body h2{font-size:36px;font-weight:700;letter-spacing:-1px;
-                color:var(--fg);margin-bottom:24px}
-section.body h2 .num{font-family:var(--mono);font-size:14px;color:var(--orange);
-                     display:block;margin-bottom:8px;letter-spacing:0;font-weight:400}
-section.body p{color:var(--fg-dim);margin-bottom:16px;max-width:680px}
-section.body p strong{color:var(--fg);font-weight:600}
+/* ── hero specific ── */
+.hero-icon{width:180px;height:180px;margin:0 auto 36px;
+           filter:drop-shadow(0 18px 50px rgba(227,126,41,0.4));
+           animation:bob 5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.cta-row{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:8px}
+.btn{display:inline-flex;align-items:center;gap:8px;
+     padding:16px 32px;border-radius:10px;font-weight:700;font-size:16px;
+     transition:transform .15s,background .15s;cursor:pointer}
+.btn-primary{background:var(--orange);color:#1a0d05}
+.btn-primary:hover{background:var(--orange-hi);transform:translateY(-2px);color:#1a0d05}
+.btn-secondary{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn-secondary:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-2px)}
+.hero-foot{margin-top:32px;font-family:var(--mono);font-size:13px;color:var(--fg-muted)}
+.hero-foot a{border-bottom:1px dotted currentColor}
 
-/* ── feature grid ── */
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-          gap:20px;margin-top:32px}
-.feature{background:var(--panel);border:1px solid var(--line);border-radius:10px;
-         padding:24px;transition:border-color 0.15s}
-.feature:hover{border-color:var(--orange)}
-.feature h3{font-size:16px;color:var(--orange);margin-bottom:8px;
-            font-family:var(--mono);font-weight:600}
-.feature p{font-size:14px;color:var(--fg-dim);margin:0}
+/* ── feature scenes (image + tagline) ── */
+.scene-feature{background:var(--bg-alt)}
+.scene-feature:nth-of-type(odd of .scene-feature){background:var(--bg)}
+.mockup{width:100%;max-width:920px;margin:48px auto 0;
+        border-radius:14px;overflow:hidden;
+        box-shadow:0 30px 80px rgba(0,0,0,0.6),
+                   0 0 0 1px rgba(227,126,41,0.15),
+                   0 0 60px rgba(227,126,41,0.08);
+        transform:translateY(0);transition:transform .4s ease}
+.mockup:hover{transform:translateY(-4px)}
+.mockup img{display:block;width:100%;height:auto}
+.bullet-row{display:flex;justify-content:center;gap:32px;margin-top:32px;flex-wrap:wrap;
+            font-family:var(--mono);font-size:13px;color:var(--fg-dim)}
+.bullet-row span{display:inline-flex;align-items:center;gap:6px}
+.bullet-row span::before{content:"●";color:var(--orange);font-size:8px}
 
-/* ── code block ── */
-pre.code{background:#000;border:1px solid var(--line);border-left:3px solid var(--orange);
-         padding:18px 22px;border-radius:8px;overflow-x:auto;margin:20px 0;
-         font-size:13px;line-height:1.7}
-pre.code .c{color:var(--fg-muted)}
-pre.code .k{color:var(--orange)}
+/* ── numbered chip ── */
+.chip{display:inline-block;font-family:var(--mono);font-size:12px;
+      color:var(--orange);background:rgba(227,126,41,0.1);
+      border:1px solid rgba(227,126,41,0.3);
+      padding:4px 10px;border-radius:20px;margin-bottom:16px}
+
+/* ── philosophy scene (text-heavy) ── */
+.philo{max-width:760px;text-align:left;margin:0 auto}
+.philo ol{list-style:none;counter-reset:p;margin-top:32px}
+.philo ol li{counter-increment:p;padding:18px 0;border-bottom:1px solid var(--line);
+             display:flex;gap:20px;align-items:baseline}
+.philo ol li::before{content:counter(p,decimal-leading-zero);
+                     font-family:var(--mono);color:var(--orange);
+                     font-size:14px;flex-shrink:0;width:36px}
+.philo ol li strong{color:var(--fg);font-weight:600;display:block;
+                    margin-bottom:4px;font-size:18px}
+.philo ol li span{color:var(--fg-dim);font-size:14px}
+
+/* ── final CTA scene ── */
+.scene-final{background:radial-gradient(ellipse at center,
+              rgba(227,126,41,0.1) 0%, var(--bg) 60%)}
+.scene-final h2{margin-bottom:16px}
 
 /* ── footer ── */
-footer{padding:48px 24px;text-align:center;color:var(--fg-muted);font-size:13px}
-footer .foot-icon{width:40px;height:40px;opacity:0.55;margin-bottom:16px}
-footer a{color:var(--fg-dim)}
-footer .links{margin-top:12px}
-footer .links a{margin:0 12px}
+footer{padding:60px 24px 40px;text-align:center;color:var(--fg-muted);
+       font-size:13px;border-top:1px solid var(--line)}
+footer .foot-icon{width:44px;height:44px;opacity:0.6;margin-bottom:16px}
+footer .links{margin-top:14px;display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+footer .links a{color:var(--fg-dim)}
 
 /* ── responsive ── */
 @media (max-width:640px){
-  .hero{padding:80px 20px 60px}
-  .hero h1{font-size:56px;letter-spacing:-1.5px}
-  .hero-icon{width:120px;height:120px}
-  section.body{padding:60px 20px}
-  section.body h2{font-size:28px}
-  .nav-links{gap:16px}
+  .nav-links a{padding:6px 10px;font-size:13px}
+  .nav-links a.cta-primary{padding:6px 14px}
+  .scene{padding:90px 18px 60px}
+  .hero-icon{width:128px;height:128px}
+  .bullet-row{gap:16px}
+  .philo ol li{flex-direction:column;gap:6px}
+  .philo ol li::before{width:auto}
 }
 </style>
 </head>
@@ -114,132 +142,194 @@ footer .links a{margin:0 12px}
       <span class="brand-name">Pumpkky</span>
     </a>
     <div class="nav-links">
-      <a href="download.html">Download</a>
-      <a href="user-manual.md">Docs</a>
-      <a href="https://github.com/dngwkim0357-ai/Pumpkky">GitHub</a>
+      <a href="#features">Features</a>
+      <a href="#install">Install</a>
+      <a href="docs.html">Documentation</a>
+      <a class="cta-primary" href="download.html">Download</a>
     </div>
   </div>
 </nav>
 
-<header class="hero">
-  <img class="hero-icon" src="icon.svg" alt="Pumpkky pumpkin">
-  <p class="hero-tag"><span class="prompt">$</span> open a folder. that's it.</p>
-  <h1>Pum<span class="accent">pk</span>ky</h1>
-  <p class="hero-sub">
-    A macOS native code editor in the spirit of
-    <a href="https://ghostty.org/">Ghostty</a> — Zig core, Swift UI,
-    zero Electron, zero account, zero telemetry.
-  </p>
-  <a class="hero-cta" href="download.html">↓ Download for macOS</a>
-  <p class="hero-cta-sub">
-    or <a href="#build">build from source</a> · arm64 · macOS 13+
-  </p>
-</header>
-
-<section class="body container">
-  <h2><span class="num">// 01</span>What is it</h2>
-  <p>
-    Pumpkky is a <strong>code editor</strong> built on top of the
-    <a href="https://github.com/ghostty-org/ghostty">Ghostty</a> terminal engine.
-    Zig handles the editor core (rope buffer, tree-sitter, FFI). Swift + AppKit
-    handles the macOS UI. The result is a native app that opens instantly and
-    stays out of your way.
-  </p>
-  <p>
-    It is <strong>not</strong> an IDE. It does not have a marketplace. It does
-    not ask you to sign in. It does not phone home. If you want VSCode-style
-    everything, this is the wrong tool.
-  </p>
+<!-- ── Scene 0: Hero ── -->
+<section class="scene">
+  <div class="scene-inner">
+    <img class="hero-icon" src="icon.svg" alt="Pumpkky pumpkin">
+    <p class="eyebrow">// v0.1.0-mvp · macOS</p>
+    <h1>Pum<span class="accent">pk</span>ky</h1>
+    <p class="sub">
+      A lightweight code editor in the
+      <a href="https://ghostty.org/">Ghostty</a> spirit.
+      Zig core, Swift UI, zero Electron, zero account, zero telemetry.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="download.html">↓ Download for macOS</a>
+      <a class="btn btn-secondary" href="docs.html">Read the Docs</a>
+    </div>
+    <p class="hero-foot">
+      <code>arm64</code> · macOS 13+ · ~425 KB dmg · or
+      <a href="#install">build from source</a>
+    </p>
+  </div>
 </section>
 
-<section class="body">
-  <div class="container">
-    <h2><span class="num">// 02</span>Features</h2>
-    <div class="features">
-      <div class="feature">
-        <h3>file_tree</h3>
-        <p>Open a folder, browse, click to open. Click. Open. That's the loop.</p>
-      </div>
-      <div class="feature">
-        <h3>rope_buffer</h3>
-        <p>Piece-table backed buffer + tree-sitter parse. Large files don't choke.</p>
-      </div>
-      <div class="feature">
-        <h3>llm_chat</h3>
-        <p>Side panel auto-detects <code>claude</code> / <code>codex</code> / <code>gemini</code> / <code>qwen</code> on your PATH.</p>
-      </div>
-      <div class="feature">
-        <h3>url_preview</h3>
-        <p>Open <code>http://localhost:3000</code> in a tab. Drag to detach (v1.0).</p>
-      </div>
-      <div class="feature">
-        <h3>config_file</h3>
-        <p>Ghostty-compatible <code>key = value</code> at <code>~/.config/ghostty-editor/config</code>. No GUI preferences.</p>
-      </div>
-      <div class="feature">
-        <h3>extensions</h3>
-        <p>dotfiles, not marketplace. Drop scripts into <code>hooks/</code>, <code>commands/</code>, <code>themes/</code>.</p>
-      </div>
+<!-- ── Scene 1: Open a folder ── -->
+<section class="scene scene-feature" id="features">
+  <div class="scene-inner">
+    <span class="chip">// 01 Open</span>
+    <h2>Open a folder.<br>Start working.</h2>
+    <p class="sub">
+      No "Welcome" wizard. No project picker mall. <code>⌘O</code>, choose a
+      directory, and the editor is already in front of you with a file tree on
+      the left and a clean editor pane on the right.
+    </p>
+    <div class="mockup">
+      <img src="mockups/main.svg" alt="Pumpkky main window with sidebar and editor">
+    </div>
+    <div class="bullet-row">
+      <span>file tree</span>
+      <span>rope buffer</span>
+      <span>tree-sitter syntax</span>
+      <span>monospaced by default</span>
     </div>
   </div>
 </section>
 
-<section class="body container">
-  <h2><span class="num">// 03</span>Install</h2>
-  <p>Direct download. No store. No account.</p>
-  <p>
-    <a class="hero-cta" href="https://github.com/dngwkim0357-ai/Pumpkky/releases/latest/download/Pumpkky.dmg">
-      ↓ Pumpkky.dmg
-    </a>
-  </p>
-  <p style="margin-top:24px">
-    First launch — right-click <code>Pumpkky.app</code> → <strong>Open</strong>
-    (Gatekeeper bypass; we ship unsigned because Apple Developer ID = $99/year
-    and we'd rather not). Details on the
-    <a href="download.html">download page</a>.
-  </p>
-</section>
-
-<section class="body" id="build">
-  <div class="container">
-    <h2><span class="num">// 04</span>Build from source</h2>
-    <p>Don't trust the binary? Build it yourself. Submodules pull in Ghostty
-       and tree-sitter so what you see is what you get.</p>
-<pre class="code"><span class="c"># requires: macOS 13+, Xcode, brew install zig</span>
-<span class="k">git</span> clone --recursive https://github.com/dngwkim0357-ai/Pumpkky
-<span class="k">cd</span> Pumpkky
-./scripts/build-macos.sh
-<span class="k">open</span> dist/Pumpkky.app</pre>
+<!-- ── Scene 2: Chat panel ── -->
+<section class="scene scene-feature">
+  <div class="scene-inner">
+    <span class="chip">// 02 Chat</span>
+    <h2>Bring your own LLM.</h2>
+    <p class="sub">
+      Pumpkky scans your <code>$PATH</code> for <code>claude</code>,
+      <code>codex</code>, <code>gemini</code>, <code>qwen</code> and any custom
+      CLI you registered. Pick from the dropdown, type, send. The subprocess is
+      yours. Pumpkky doesn't sit in the middle.
+    </p>
+    <div class="mockup">
+      <img src="mockups/chat.svg" alt="Pumpkky chat panel with CLI dropdown">
+    </div>
+    <div class="bullet-row">
+      <span>auto-detect</span>
+      <span>per-prompt CLI switch</span>
+      <span>⌘⇧L to toggle</span>
+      <span>no API key in Pumpkky</span>
+    </div>
   </div>
 </section>
 
-<section class="body container">
-  <h2><span class="num">// 05</span>Philosophy</h2>
-  <p><strong>Eight rules.</strong> Borrowed wholesale from Ghostty's "carve away
-  the excess" stance and adapted for an editor:</p>
-  <ol style="color:var(--fg-dim);padding-left:24px;line-height:2">
-    <li>Carve away the excess.</li>
-    <li>Defaults work. Config is optional.</li>
-    <li>Config is a file. There is no settings GUI.</li>
-    <li>No account, no telemetry. Ever.</li>
-    <li>Extensions are dotfiles. There is no marketplace.</li>
-    <li>GPU-accelerated native. No web engine.</li>
-    <li>Respect upstream. Ghostty is a submodule, not a fork.</li>
-    <li>Best UI per OS. Core is shared, UI is native.</li>
-  </ol>
-  <p style="margin-top:24px">
-    Read the long version in <a href="https://github.com/dngwkim0357-ai/Pumpkky/blob/main/docs/user-manual.md">user-manual.md</a>.
-  </p>
+<!-- ── Scene 3: Terminal + URL preview ── -->
+<section class="scene scene-feature">
+  <div class="scene-inner">
+    <span class="chip">// 03 Build &amp; preview</span>
+    <h2>The dev server,<br>in a tab.</h2>
+    <p class="sub">
+      Split the editor with a terminal (Ghostty heritage), or pop
+      <code>localhost:3000</code> straight into a tab. Stay in one window.
+      No alt-tab dance with the browser.
+    </p>
+    <div class="mockup">
+      <img src="mockups/urltab.svg" alt="Pumpkky URL preview tab showing localhost:3000">
+    </div>
+    <div class="bullet-row">
+      <span>terminal split</span>
+      <span>url tab</span>
+      <span>back / forward / reload</span>
+      <span>drag to detach (v1.0)</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Scene 4: Terminal mockup ── -->
+<section class="scene scene-feature">
+  <div class="scene-inner">
+    <span class="chip">// 04 Terminal</span>
+    <h2>A Ghostty under<br>your editor.</h2>
+    <p class="sub">
+      <code>⌃`</code> brings up a terminal pane. v1.0 wires in the real Ghostty
+      NSView (Kitty Graphics, ANSI truecolor, the whole engine). The MVP ships
+      a placeholder so the layout, keybindings, and tooling are settled first.
+    </p>
+    <div class="mockup">
+      <img src="mockups/terminal.svg" alt="Pumpkky terminal placeholder split below editor">
+    </div>
+  </div>
+</section>
+
+<!-- ── Scene 5: Install ── -->
+<section class="scene" id="install">
+  <div class="scene-inner">
+    <span class="chip">// 05 Install</span>
+    <h2>Install in 10 seconds.</h2>
+    <p class="sub">
+      No App Store. No sign-in. No "welcome to your account" screen.
+      Direct dmg → drag to <code>/Applications</code> → done.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://github.com/dngwkim0357-ai/Pumpkky/releases/latest/download/Pumpkky.dmg">
+        ↓ Pumpkky.dmg
+      </a>
+      <a class="btn btn-secondary" href="download.html">Install / Update / Build instructions</a>
+    </div>
+    <p class="hero-foot">stable URL · always the latest release</p>
+  </div>
+</section>
+
+<!-- ── Scene 6: Philosophy ── -->
+<section class="scene">
+  <div class="scene-inner philo">
+    <div style="text-align:center">
+      <span class="chip">// 06 Philosophy</span>
+      <h2>Eight rules.</h2>
+      <p class="sub" style="margin-bottom:0">
+        Borrowed from Ghostty's "carve away the excess" stance and adapted for
+        an editor.
+      </p>
+    </div>
+    <ol>
+      <li><div><strong>Carve away the excess.</strong>
+        <span>If it doesn't earn its place, it doesn't ship.</span></div></li>
+      <li><div><strong>Defaults work. Config is optional.</strong>
+        <span>Open Pumpkky for the first time and start typing.</span></div></li>
+      <li><div><strong>Config is a file.</strong>
+        <span>There is no settings GUI. <code>~/.config/ghostty-editor/config</code>, key = value.</span></div></li>
+      <li><div><strong>No account, no telemetry.</strong>
+        <span>Nothing leaves your machine without you explicitly running a CLI.</span></div></li>
+      <li><div><strong>Extensions are dotfiles, not marketplace.</strong>
+        <span>Drop shell / lua / zig scripts into <code>hooks/</code>, <code>commands/</code>, <code>themes/</code>.</span></div></li>
+      <li><div><strong>GPU-accelerated native. No web engine.</strong>
+        <span>Swift + AppKit on macOS, GTK4 on Linux, WinUI3 on Windows (v1.0+).</span></div></li>
+      <li><div><strong>Respect upstream.</strong>
+        <span>Ghostty is a submodule, not a fork. We give back when we can.</span></div></li>
+      <li><div><strong>Best UI per OS.</strong>
+        <span>Core in Zig is shared. UI is native to each platform.</span></div></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ── Scene 7: Final CTA ── -->
+<section class="scene scene-final">
+  <div class="scene-inner">
+    <span class="chip">Try it now</span>
+    <h2>Less editor.<br>More editing.</h2>
+    <p class="sub">
+      425 KB. Open Folder, click a file, write code. That's the entire onboarding.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="download.html">↓ Download for macOS</a>
+      <a class="btn btn-secondary" href="docs.html">Read the Docs</a>
+    </div>
+  </div>
 </section>
 
 <footer>
   <img class="foot-icon" src="favicon.svg" alt="">
   <p><strong style="color:var(--orange)">Pumpkky</strong> · MIT License · v0.1.0-mvp · 2026</p>
   <div class="links">
-    <a href="https://github.com/dngwkim0357-ai/Pumpkky">github</a>
-    <a href="https://github.com/dngwkim0357-ai/Pumpkky/releases">releases</a>
-    <a href="https://github.com/dngwkim0357-ai/Pumpkky/issues">issues</a>
-    <a href="https://ghostty.org/">ghostty ↗</a>
+    <a href="https://github.com/dngwkim0357-ai/Pumpkky">GitHub</a>
+    <a href="https://github.com/dngwkim0357-ai/Pumpkky/releases">Releases</a>
+    <a href="https://github.com/dngwkim0357-ai/Pumpkky/issues">Issues</a>
+    <a href="docs.html">Docs</a>
+    <a href="https://ghostty.org/">Ghostty ↗</a>
   </div>
 </footer>
 

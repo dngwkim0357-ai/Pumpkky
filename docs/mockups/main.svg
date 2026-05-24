@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img" aria-label="Pumpkky main window mockup">
+  <defs>
+    <linearGradient id="winShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e1e1e"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="900" height="600" rx="14" fill="url(#winShadow)" stroke="#2a2a2a"/>
+  <!-- title bar -->
+  <rect x="0" y="0" width="900" height="38" rx="14" fill="#1a1a1a"/>
+  <rect x="0" y="24" width="900" height="14" fill="#1a1a1a"/>
+  <circle cx="22" cy="19" r="6" fill="#ff5f57"/>
+  <circle cx="42" cy="19" r="6" fill="#febc2e"/>
+  <circle cx="62" cy="19" r="6" fill="#28c840"/>
+  <text x="450" y="24" text-anchor="middle" fill="#888" font-family="-apple-system,sans-serif" font-size="12">myproject — Pumpkky</text>
+  <!-- sidebar -->
+  <rect x="0" y="38" width="200" height="562" fill="#0d0d0d"/>
+  <text x="18" y="68" fill="#e37e29" font-family="ui-monospace,monospace" font-size="11" font-weight="700">FILES</text>
+  <g font-family="ui-monospace,monospace" font-size="12" fill="#a0a0a0">
+    <text x="18" y="98">▸ src/</text>
+    <text x="18" y="120">▸ tests/</text>
+    <text x="18" y="142">  README.md</text>
+    <text x="18" y="164">  build.zig</text>
+    <text x="18" y="186" fill="#e37e29">▸ main.zig</text>
+    <text x="30" y="208" fill="#e8e8e8">parser.zig</text>
+    <text x="30" y="230" fill="#e8e8e8">tokenizer.zig</text>
+    <text x="18" y="252">  config.toml</text>
+  </g>
+  <!-- editor pane -->
+  <rect x="200" y="38" width="700" height="562" fill="#0a0a0a"/>
+  <!-- tab bar -->
+  <rect x="200" y="38" width="700" height="32" fill="#141414"/>
+  <rect x="200" y="38" width="160" height="32" fill="#0a0a0a"/>
+  <text x="220" y="58" fill="#e37e29" font-family="ui-monospace,monospace" font-size="11">● main.zig</text>
+  <text x="380" y="58" fill="#666" font-family="ui-monospace,monospace" font-size="11">parser.zig</text>
+  <!-- code -->
+  <g font-family="ui-monospace,monospace" font-size="13">
+    <text x="220" y="100" fill="#666">  1</text><text x="260" y="100" fill="#e37e29">const</text><text x="320" y="100" fill="#e8e8e8"> std = </text><text x="385" y="100" fill="#e37e29">@import</text><text x="450" y="100" fill="#8be9ff">("std");</text>
+    <text x="220" y="124" fill="#666">  2</text>
+    <text x="220" y="148" fill="#666">  3</text><text x="260" y="148" fill="#e37e29">pub fn</text><text x="320" y="148" fill="#b07bff"> main</text><text x="365" y="148" fill="#e8e8e8">() </text><text x="385" y="148" fill="#e37e29">!</text><text x="395" y="148" fill="#b07bff">void</text><text x="430" y="148" fill="#e8e8e8"> {</text>
+    <text x="220" y="172" fill="#666">  4</text><text x="280" y="172" fill="#a0a0a0">// boot Pumpkky editor</text>
+    <text x="220" y="196" fill="#666">  5</text><text x="280" y="196" fill="#e8e8e8">var gpa = std.heap.</text><text x="430" y="196" fill="#b07bff">DebugAllocator</text><text x="540" y="196" fill="#e8e8e8">(.{}){};</text>
+    <text x="220" y="220" fill="#666">  6</text><text x="280" y="220" fill="#e37e29">defer</text><text x="330" y="220" fill="#e8e8e8"> _ = gpa.</text><text x="395" y="220" fill="#b07bff">deinit</text><text x="445" y="220" fill="#e8e8e8">();</text>
+    <text x="220" y="244" fill="#666">  7</text>
+    <text x="220" y="268" fill="#666">  8</text><text x="280" y="268" fill="#e8e8e8">try editor.</text><text x="370" y="268" fill="#b07bff">run</text><text x="395" y="268" fill="#e8e8e8">(gpa.</text><text x="435" y="268" fill="#b07bff">allocator</text><text x="500" y="268" fill="#e8e8e8">());</text>
+    <text x="220" y="292" fill="#666">  9</text><text x="260" y="292" fill="#e8e8e8">}</text>
+  </g>
+  <!-- cursor blink line -->
+  <rect x="217" y="280" width="2" height="16" fill="#e37e29"/>
+  <!-- status bar -->
+  <rect x="200" y="572" width="700" height="28" fill="#141414"/>
+  <text x="220" y="590" fill="#a0a0a0" font-family="ui-monospace,monospace" font-size="11">main.zig · zig · ln 8, col 24 · UTF-8</text>
+  <text x="880" y="590" text-anchor="end" fill="#e37e29" font-family="ui-monospace,monospace" font-size="11">● clean</text>
+</svg>

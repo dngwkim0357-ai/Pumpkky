@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img" aria-label="Pumpkky chat panel mockup">
+  <rect x="0" y="0" width="900" height="600" rx="14" fill="#0a0a0a" stroke="#2a2a2a"/>
+  <rect x="0" y="0" width="900" height="38" rx="14" fill="#1a1a1a"/>
+  <rect x="0" y="24" width="900" height="14" fill="#1a1a1a"/>
+  <circle cx="22" cy="19" r="6" fill="#ff5f57"/>
+  <circle cx="42" cy="19" r="6" fill="#febc2e"/>
+  <circle cx="62" cy="19" r="6" fill="#28c840"/>
+  <text x="450" y="24" text-anchor="middle" fill="#888" font-family="-apple-system,sans-serif" font-size="12">myproject — Pumpkky</text>
+  <!-- sidebar (collapsed-ish) -->
+  <rect x="0" y="38" width="160" height="562" fill="#0d0d0d"/>
+  <text x="14" y="68" fill="#e37e29" font-family="ui-monospace,monospace" font-size="11" font-weight="700">FILES</text>
+  <g font-family="ui-monospace,monospace" font-size="11" fill="#a0a0a0">
+    <text x="14" y="92">main.zig</text>
+    <text x="14" y="112">parser.zig</text>
+    <text x="14" y="132">README.md</text>
+  </g>
+  <!-- editor -->
+  <rect x="160" y="38" width="440" height="562" fill="#0a0a0a"/>
+  <g font-family="ui-monospace,monospace" font-size="12" fill="#a0a0a0">
+    <text x="178" y="78">  1  const std = @import("std");</text>
+    <text x="178" y="100">  2</text>
+    <text x="178" y="122">  3  pub fn main() !void {</text>
+    <text x="178" y="144">  4      try editor.run();</text>
+    <text x="178" y="166">  5  }</text>
+  </g>
+  <!-- chat panel -->
+  <rect x="600" y="38" width="300" height="562" fill="#121212" stroke="#232323"/>
+  <!-- header -->
+  <rect x="600" y="38" width="300" height="48" fill="#181818"/>
+  <rect x="612" y="50" width="26" height="24" rx="4" fill="#1f1f1f" stroke="#2a2a2a"/>
+  <text x="625" y="67" text-anchor="middle" fill="#e8e8e8" font-family="-apple-system,sans-serif" font-size="14">+</text>
+  <rect x="648" y="50" width="240" height="24" rx="4" fill="#1f1f1f" stroke="#2a2a2a"/>
+  <text x="660" y="67" fill="#e37e29" font-family="ui-monospace,monospace" font-size="11">claude  —  /usr/local/bin/claude  ▼</text>
+  <!-- history -->
+  <g font-family="ui-monospace,monospace" font-size="11">
+    <text x="614" y="110" fill="#e37e29">&gt; explain the parser logic</text>
+    <text x="614" y="142" fill="#a0a0a0">claude:</text>
+    <text x="614" y="160" fill="#e8e8e8">The parser uses a recursive</text>
+    <text x="614" y="176" fill="#e8e8e8">descent pattern. Entry at</text>
+    <text x="614" y="192" fill="#e8e8e8">parser.zig:42, dispatches</text>
+    <text x="614" y="208" fill="#e8e8e8">on token kind via parseExpr.</text>
+    <text x="614" y="240" fill="#e37e29">&gt; show me parseExpr</text>
+    <text x="614" y="272" fill="#a0a0a0">claude:</text>
+    <text x="614" y="290" fill="#e8e8e8">pub fn parseExpr(self) !Node {</text>
+    <text x="614" y="306" fill="#e8e8e8">  return switch (peek()) {</text>
+    <text x="614" y="322" fill="#e8e8e8">    .number =&gt; parseNum(),</text>
+    <text x="614" y="338" fill="#e8e8e8">    .ident  =&gt; parseId(),</text>
+    <text x="614" y="354" fill="#e8e8e8">    else =&gt; error.Bad,</text>
+    <text x="614" y="370" fill="#e8e8e8">  };</text>
+    <text x="614" y="386" fill="#e8e8e8">}</text>
+  </g>
+  <!-- input -->
+  <rect x="612" y="540" width="216" height="36" rx="6" fill="#1f1f1f" stroke="#2a2a2a"/>
+  <text x="624" y="563" fill="#666" font-family="-apple-system,sans-serif" font-size="12">Ask anything (⌘Enter)</text>
+  <rect x="836" y="540" width="52" height="36" rx="6" fill="#e37e29"/>
+  <text x="862" y="563" text-anchor="middle" fill="#1a0d05" font-family="-apple-system,sans-serif" font-size="12" font-weight="700">Send</text>
+</svg>
