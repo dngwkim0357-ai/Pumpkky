@@ -63,6 +63,6 @@ jobs:
       - name: Upload .app artifact
         uses: actions/upload-artifact@v5
         with:
-          name: Ghostty-Editor-app
-          path: dist/Ghostty-Editor.app
+          name: Pumpkky-app
+          path: dist/Pumpkky.app
           retention-days: 14
