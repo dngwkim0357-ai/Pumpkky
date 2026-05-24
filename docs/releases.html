@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Releases — Pumpkky</title>
+<meta name="description" content="Pumpkky のリリースノート・変更履歴・dmg ダウンロード。">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+:root{
+  --orange:#e37e29;--orange-hi:#f08c33;
+  --bg:#0c0c0d;--bg-section:#0f0f10;--panel:#1a1a1d;
+  --line:#262629;--line-hi:#3a3a3f;
+  --fg:#fafafa;--fg-2:#c0c0c5;--fg-3:#8a8a92;--fg-4:#5a5a62;
+  --mono:"JetBrains Mono","SF Mono",ui-monospace,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Hiragino Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);
+     font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none;transition:color .15s,background .15s}
+code{font-family:var(--mono);font-size:0.9em;background:rgba(227,126,41,0.1);
+     padding:1px 6px;border-radius:3px;color:var(--orange-hi)}
+pre{background:#000;border:1px solid var(--line);border-left:3px solid var(--orange);
+    padding:14px 18px;border-radius:8px;overflow-x:auto;margin:12px 0;font-size:13px;
+    line-height:1.7;font-family:var(--mono)}
+pre code{background:none;padding:0;color:var(--fg-2);font-size:inherit}
+
+/* nav */
+nav.top{position:sticky;top:0;background:rgba(12,12,13,0.72);
+        backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+        border-bottom:1px solid rgba(255,255,255,0.06);z-index:100;height:60px}
+nav.top .inner{display:flex;align-items:center;justify-content:space-between;
+               max-width:1180px;margin:0 auto;padding:0 28px;height:100%}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:26px;height:26px}
+.brand b{font-weight:700;font-size:17px;letter-spacing:-0.3px}
+.nav-links{display:flex;gap:6px;align-items:center;font-size:14px;color:var(--fg-2)}
+.nav-links a{padding:8px 14px;border-radius:6px;color:var(--fg-2)}
+.nav-links a:hover{color:var(--fg);background:rgba(255,255,255,0.05)}
+
+main{max-width:840px;margin:0 auto;padding:80px 28px}
+.eyebrow{font-family:var(--mono);font-size:12px;color:var(--orange);
+         letter-spacing:0.06em;text-transform:uppercase;margin-bottom:18px;text-align:center}
+h1{font-size:clamp(40px,5vw,64px);font-weight:800;letter-spacing:-2px;
+   line-height:1.05;margin-bottom:14px;text-align:center}
+p.sub{font-size:17px;color:var(--fg-3);max-width:560px;margin:0 auto 56px;
+      line-height:1.55;text-align:center}
+
+/* release card */
+.release{background:var(--panel);border:1px solid var(--line);
+         border-radius:14px;padding:32px;margin-bottom:24px;
+         position:relative;overflow:hidden}
+.release.latest{border-color:rgba(227,126,41,0.4);
+                background:linear-gradient(180deg,
+                  rgba(227,126,41,0.04) 0%,
+                  var(--panel) 200px)}
+.release-head{display:flex;align-items:baseline;justify-content:space-between;
+              gap:16px;margin-bottom:8px;flex-wrap:wrap}
+.release-tag{font-size:24px;font-weight:800;letter-spacing:-0.6px;color:var(--fg);
+             font-family:var(--mono)}
+.release-tag .latest-pill{font-family:var(--sans);font-size:11px;font-weight:600;
+                          padding:3px 8px;border-radius:999px;
+                          background:rgba(227,126,41,0.15);color:var(--orange);
+                          border:1px solid rgba(227,126,41,0.3);
+                          vertical-align:middle;margin-left:10px;
+                          letter-spacing:0;text-transform:uppercase}
+.release-date{font-family:var(--mono);font-size:12px;color:var(--fg-4)}
+.release-meta{font-size:13px;color:var(--fg-3);margin-bottom:18px;
+              font-family:var(--mono)}
+.release-meta a{color:var(--fg-3);border-bottom:1px dotted currentColor}
+.release-meta a:hover{color:var(--orange)}
+.release-body{color:var(--fg-2);font-size:14px;line-height:1.7;
+              border-top:1px solid var(--line);padding-top:18px;margin-top:8px}
+.release-body h1,.release-body h2,.release-body h3{
+  color:var(--fg);margin:18px 0 8px;font-weight:700;letter-spacing:-0.3px}
+.release-body h1{font-size:20px}
+.release-body h2{font-size:18px;color:var(--orange-hi)}
+.release-body h3{font-size:15px}
+.release-body p{margin:8px 0}
+.release-body ul,.release-body ol{padding-left:22px;margin:8px 0}
+.release-body li{margin:3px 0}
+.release-body a{color:var(--orange);border-bottom:1px dotted currentColor}
+.release-body a:hover{color:var(--orange-hi)}
+.release-body strong{color:var(--fg);font-weight:600}
+.release-body em{color:var(--fg-3);font-style:italic}
+.release-body hr{border:none;border-top:1px solid var(--line);margin:20px 0}
+.release-body blockquote{border-left:3px solid var(--orange);
+                         padding:4px 14px;color:var(--fg-3);
+                         margin:10px 0;background:rgba(227,126,41,0.04)}
+
+/* assets */
+.release-assets{margin-top:20px;padding-top:18px;
+                border-top:1px solid var(--line)}
+.release-assets h4{font-family:var(--mono);font-size:11px;
+                   color:var(--fg-4);letter-spacing:0.1em;text-transform:uppercase;
+                   margin-bottom:10px;font-weight:600}
+.release-assets ul{list-style:none}
+.release-assets li{margin:6px 0}
+.release-assets a.asset{display:inline-flex;align-items:center;gap:8px;
+                        padding:8px 14px;border-radius:6px;
+                        background:rgba(227,126,41,0.08);color:var(--orange);
+                        font-family:var(--mono);font-size:13px;font-weight:500;
+                        border:1px solid rgba(227,126,41,0.2);
+                        transition:background .15s}
+.release-assets a.asset:hover{background:rgba(227,126,41,0.16);color:var(--orange-hi)}
+.release-assets a.asset .sz{color:var(--fg-4);font-size:11px}
+
+/* state */
+#status{text-align:center;padding:60px 0;color:var(--fg-3);font-family:var(--mono);font-size:13px}
+#status .err{color:#ff6464}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--line);
+         border-top-color:var(--orange);border-radius:50%;
+         animation:spin 0.7s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* footer */
+footer{text-align:center;padding:48px 28px;color:var(--fg-4);
+       font-size:13px;border-top:1px solid var(--line);margin-top:60px}
+footer a{color:var(--fg-3)}
+footer a:hover{color:var(--orange)}
+
+@media (max-width:560px){
+  .nav-links a{font-size:13px;padding:6px 10px}
+  main{padding:60px 18px}
+  .release{padding:24px 18px}
+}
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="inner">
+    <a class="brand" href="./">
+      <img src="favicon.svg" alt=""><b>Pumpkky</b>
+    </a>
+    <div class="nav-links">
+      <a href="docs.html">Docs</a>
+      <a href="https://github.com/dngwkim0357-ai/Pumpkky" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <p class="eyebrow">// Changelog</p>
+  <h1>Releases</h1>
+  <p class="sub">
+    Pumpkky の全リリース・変更点・dmg ダウンロード。
+    GitHub Releases から自動取得しているので常に最新です。
+  </p>
+
+  <div id="status"><span class="spinner"></span>Loading from GitHub…</div>
+  <div id="list"></div>
+</main>
+
+<footer>
+  <p><strong style="color:var(--orange)">Pumpkky</strong> · MIT License · 2026</p>
+  <p style="margin-top:8px">
+    <a href="./">Home</a> ·
+    <a href="docs.html">Docs</a> ·
+    <a href="download.html">Download</a> ·
+    <a href="https://github.com/dngwkim0357-ai/Pumpkky/releases" target="_blank" rel="noopener noreferrer">GitHub Releases ↗</a>
+  </p>
+</footer>
+
+<script>
+/* ── ミニ markdown renderer (release notes 用、外部依存なし) ── */
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function renderMarkdown(md){
+  if(!md) return '<em>(no description)</em>';
+  // normalize line endings
+  md = md.replace(/\r\n/g, '\n');
+
+  // ── extract fenced code blocks first (so they don't get further processed)
+  const codes = [];
+  md = md.replace(/```([a-z]*)\n([\s\S]*?)```/g, (_, lang, body) => {
+    codes.push(`<pre><code>${escapeHtml(body)}</code></pre>`);
+    return `\x00CODE${codes.length-1}\x00`;
+  });
+
+  // ── escape remaining HTML
+  md = escapeHtml(md);
+
+  // ── inline code
+  md = md.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // ── links [text](url) — &amp; を & に戻す必要があるので注意
+  md = md.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, t, url) => {
+    const safeUrl = url.replace(/&amp;/g, '&');
+    return `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer">${t}</a>`;
+  });
+
+  // ── bold + italic
+  md = md.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  md = md.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>');
+
+  // ── headings
+  md = md.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  md = md.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  md = md.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // ── horizontal rule
+  md = md.replace(/^---+$/gm, '<hr>');
+
+  // ── blockquote
+  md = md.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // ── lists
+  // unordered
+  md = md.replace(/(?:^[\-\*] .+(?:\n|$))+/gm, m => {
+    const items = m.trim().split('\n').map(l => `<li>${l.replace(/^[\-\*] /, '')}</li>`).join('');
+    return `<ul>${items}</ul>`;
+  });
+  // ordered
+  md = md.replace(/(?:^\d+\. .+(?:\n|$))+/gm, m => {
+    const items = m.trim().split('\n').map(l => `<li>${l.replace(/^\d+\. /, '')}</li>`).join('');
+    return `<ol>${items}</ol>`;
+  });
+
+  // ── paragraphs: split by blank lines, wrap loose lines that aren't already block-tagged
+  md = md.split(/\n{2,}/).map(block => {
+    block = block.trim();
+    if (!block) return '';
+    if (/^<(h1|h2|h3|ul|ol|pre|blockquote|hr|p)/.test(block)) return block;
+    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+  }).join('\n');
+
+  // ── restore code blocks
+  md = md.replace(/\x00CODE(\d+)\x00/g, (_, i) => codes[+i]);
+
+  return md;
+}
+
+function formatBytes(n){
+  if (n < 1024) return `${n} B`;
+  if (n < 1024*1024) return `${(n/1024).toFixed(1)} KB`;
+  return `${(n/(1024*1024)).toFixed(1)} MB`;
+}
+
+function formatDate(iso){
+  const d = new Date(iso);
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+
+async function load(){
+  const status = document.getElementById('status');
+  const list = document.getElementById('list');
+  try {
+    const r = await fetch('https://api.github.com/repos/dngwkim0357-ai/Pumpkky/releases?per_page=20');
+    if (!r.ok) throw new Error(`GitHub API: HTTP ${r.status}`);
+    const data = await r.json();
+    if (!Array.isArray(data) || data.length === 0) {
+      status.innerHTML = '<em>まだリリースがありません。</em>';
+      return;
+    }
+    status.style.display = 'none';
+
+    // sort: published_at desc
+    data.sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));
+
+    list.innerHTML = data.map((rel, i) => {
+      const isLatest = i === 0 && !rel.prerelease && !rel.draft;
+      const assets = (rel.assets || []).filter(a => a.name.endsWith('.dmg') || a.name.endsWith('.zip'));
+      const assetHtml = assets.length === 0 ? '' : `
+        <div class="release-assets">
+          <h4>// Assets</h4>
+          <ul>
+            ${assets.map(a => `
+              <li>
+                <a class="asset" href="${a.browser_download_url}"
+                   target="_blank" rel="noopener noreferrer">
+                  ↓ ${escapeHtml(a.name)}
+                  <span class="sz">(${formatBytes(a.size)})</span>
+                </a>
+              </li>`).join('')}
+          </ul>
+        </div>`;
+
+      return `
+        <article class="release${isLatest ? ' latest' : ''}">
+          <div class="release-head">
+            <div class="release-tag">
+              ${escapeHtml(rel.tag_name)}
+              ${isLatest ? '<span class="latest-pill">Latest</span>' : ''}
+            </div>
+            <div class="release-date">${rel.published_at ? formatDate(rel.published_at) : 'draft'}</div>
+          </div>
+          <div class="release-meta">
+            ${escapeHtml(rel.name || rel.tag_name)}
+            · <a href="${rel.html_url}" target="_blank" rel="noopener noreferrer">GitHub で見る ↗</a>
+          </div>
+          <div class="release-body">${renderMarkdown(rel.body || '')}</div>
+          ${assetHtml}
+        </article>`;
+    }).join('');
+  } catch (e) {
+    status.innerHTML = `<span class="err">読み込みに失敗しました: ${escapeHtml(e.message)}</span><br>
+      <a href="https://github.com/dngwkim0357-ai/Pumpkky/releases"
+         target="_blank" rel="noopener noreferrer" style="color:var(--orange)">
+        GitHub Releases で見る ↗
+      </a>`;
+  }
+}
+
+load();
+</script>
+
+</body>
+</html>
