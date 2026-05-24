@@ -77,13 +77,20 @@ pub const Config = struct {
                 val_raw;
             if (key.len == 0) continue;
 
-            const key_dup = try self.allocator.dupe(u8, key);
-            const val_dup = try self.allocator.dupe(u8, val);
-
-            if (self.entries.fetchPut(self.allocator, key_dup, val_dup) catch return error.OutOfMemory) |old| {
-                self.allocator.free(old.key);
-                self.allocator.free(old.value);
+            // getOrPut keeps the existing key's storage alive for updates and
+            // only allocates a fresh key slice on first insert. fetchPut would
+            // hand back the old key pointer (still owned by the map) — freeing
+            // it leaves the map with a dangling key and the next .get() crashes.
+            const gop = self.entries.getOrPut(self.allocator, key) catch
+                return error.OutOfMemory;
+            if (!gop.found_existing) {
+                gop.key_ptr.* = self.allocator.dupe(u8, key) catch
+                    return error.OutOfMemory;
+            } else {
+                self.allocator.free(gop.value_ptr.*);
             }
+            gop.value_ptr.* = self.allocator.dupe(u8, val) catch
+                return error.OutOfMemory;
         }
     }
 };
