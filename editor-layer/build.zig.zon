@@ -1,0 +1,17 @@
+.{
+    .name = .editor,
+    .version = "0.0.1",
+    .fingerprint = 0xccf1f1bab3a24cdc,
+    .minimum_zig_version = "0.16.0",
+    // tree-sitter & tree-sitter-zig are pulled in as git submodules under
+    // editor-layer/vendor/ instead of Zig packages. Their own build.zig is
+    // pre-0.14 API and incompatible with Zig 0.16; vendoring lets our own
+    // build.zig fully control the C source compile.
+    .dependencies = .{},
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "vendor",
+    },
+}

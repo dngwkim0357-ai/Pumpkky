@@ -1,0 +1,17 @@
+# Build artifacts (Zig / Swift / macOS)
+zig-cache/
+.zig-cache/
+zig-out/
+zig-pkg/
+.build/
+.swiftpm/
+dist/
+Pumpkky.app/
+*.dmg
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

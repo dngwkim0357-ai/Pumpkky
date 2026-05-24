@@ -1,0 +1,4 @@
+module EditorBridge {
+    header "EditorBridge.h"
+    export *
+}

@@ -1,0 +1,68 @@
+name: Build (macOS)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-macos:
+    name: Build & test on macOS
+    runs-on: macos-14
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+
+      - name: Force Node.js 24 (per CCAGI policy 2026-05-23)
+        run: echo "FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true" >> $GITHUB_ENV
+
+      - name: Setup Zig
+        uses: mlugg/setup-zig@v2
+        with:
+          version: 0.16.0
+
+      - name: Cache Zig artifacts
+        uses: actions/cache@v5
+        with:
+          path: |
+            editor-layer/.zig-cache
+            editor-layer/zig-out
+            ~/.cache/zig
+          key: zig-${{ runner.os }}-${{ hashFiles('editor-layer/build.zig.zon') }}
+          restore-keys: |
+            zig-${{ runner.os }}-
+
+      - name: Cache Swift build
+        uses: actions/cache@v5
+        with:
+          path: ui-macos/.build
+          key: swift-${{ runner.os }}-${{ hashFiles('ui-macos/Package.swift') }}
+          restore-keys: |
+            swift-${{ runner.os }}-
+
+      - name: Build editor-layer (Zig)
+        working-directory: editor-layer
+        run: zig build -Doptimize=ReleaseSafe
+
+      - name: Run Zig unit tests
+        working-directory: editor-layer
+        run: zig build test
+
+      - name: Build ui-macos (Swift)
+        working-directory: ui-macos
+        run: swift build --configuration release
+
+      - name: Pack Ghostty-Editor.app
+        run: ./scripts/build-macos.sh
+
+      - name: Upload .app artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: Ghostty-Editor-app
+          path: dist/Ghostty-Editor.app
+          retention-days: 14
