@@ -35,6 +35,16 @@ code,pre{font-family:var(--mono)}
 code{font-size:0.9em;background:rgba(227,126,41,0.1);
      padding:1px 6px;border-radius:3px;color:var(--orange-hi)}
 
+
+/* ── CJK line-break (日本語の禁則・行頭句読点防止・単語途中分割防止) ── */
+.hero .sub, .feat .copy p, .principles .card p,
+.principles .lead, .final p, p.lead, .feat .copy h2,
+.scene h1, .scene h2, h2.section{
+  word-break:keep-all;
+  overflow-wrap:anywhere;
+  line-break:strict;
+}
+
 /* ── shared layout ── */
 .wrap{max-width:1180px;margin:0 auto;padding:0 28px}
 .eyebrow{font-family:var(--mono);font-size:12px;color:var(--orange);
@@ -223,9 +233,10 @@ footer .bottom .lang a.active{color:var(--orange)}
   <h1>軽量コードエディタ。<br>
       <span class="accent">余計なものは、無い。</span></h1>
   <p class="sub">
-    Pumpkky は <a href="https://ghostty.org/" target="_blank" rel="noopener noreferrer" style="color:var(--orange)">Ghostty</a> の上に乗る
-    macOS native のコードエディタ。Zig 製のコアと Swift + AppKit の UI。
-    Electron なし、アカウントなし、telemetry なし。
+    Pumpkky は <a href="https://ghostty.org/" target="_blank" rel="noopener noreferrer" style="color:var(--orange)">Ghostty</a> の上に乗る、<br>
+    macOS native のコードエディタ。<br>
+    Zig core + Swift / AppKit、<br>
+    Electron なし・アカウントなし・telemetry なし。
   </p>
   <div class="cta-row">
     <a class="btn btn-primary" href="download.html">↓ Download for macOS</a>
