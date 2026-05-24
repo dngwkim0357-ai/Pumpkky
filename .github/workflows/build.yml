@@ -57,7 +57,7 @@ jobs:
         working-directory: ui-macos
         run: swift build --configuration release
 
-      - name: Pack Ghostty-Editor.app
+      - name: Pack Pumpkky.app
         run: ./scripts/build-macos.sh
 
       - name: Upload .app artifact

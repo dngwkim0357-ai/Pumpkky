@@ -61,6 +61,16 @@ APP="$ROOT/dist/Pumpkky.app"
 rm -rf "$APP" "$ROOT/dist/Ghostty-Editor.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$EXE" "$APP/Contents/MacOS/pumpkky"
+
+# App icon (jack-o-lantern) — Finder / Dock / Cmd-Tab で正しく出るように
+ICNS_SRC="$ROOT/scripts/dmg-assets/Pumpkky.icns"
+if [ -f "$ICNS_SRC" ]; then
+    cp "$ICNS_SRC" "$APP/Contents/Resources/AppIcon.icns"
+    echo "    AppIcon.icns embedded"
+else
+    echo "    WARNING: $ICNS_SRC not found — app icon will be generic"
+fi
+
 cat > "$APP/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -70,6 +80,7 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
     <key>CFBundleIdentifier</key><string>com.pumpkky.app</string>
     <key>CFBundleName</key><string>Pumpkky</string>
     <key>CFBundleDisplayName</key><string>Pumpkky</string>
+    <key>CFBundleIconFile</key><string>AppIcon</string>
     <key>CFBundleVersion</key><string>0.1.0</string>
     <key>CFBundleShortVersionString</key><string>0.1.0</string>
     <key>CFBundlePackageType</key><string>APPL</string>

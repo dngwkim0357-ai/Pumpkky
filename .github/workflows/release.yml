@@ -1,5 +1,16 @@
 name: Release (tag → dmg → GitHub Release)
 
+# Apple Developer ID で codesign + notarize するためには以下の Secrets を設定:
+#   APPLE_DEVELOPER_ID_APPLICATION_CERT       — Developer ID Application .p12 を base64 encode したもの
+#   APPLE_DEVELOPER_ID_APPLICATION_CERT_PWD   — .p12 のパスワード
+#   APPLE_KEYCHAIN_PASSWORD                    — 一時 keychain のパスワード (任意の文字列)
+#   APPLE_ID                                   — Apple Developer Program のメール
+#   APPLE_APP_SPECIFIC_PASSWORD                — appleid.apple.com で発行する app-specific password
+#   APPLE_TEAM_ID                              — Apple Developer の Team ID (e.g. AB12CD34EF)
+#
+# Secrets 未設定の場合 (= Apple Dev 未登録) は ad-hoc 署名のままで release されます。
+# Secrets 設定手順: docs/notarization-setup.md
+
 on:
   push:
     tags:
@@ -7,9 +18,9 @@ on:
 
 jobs:
   release-macos:
-    name: Build & publish unsigned dmg
+    name: Build & publish dmg
     runs-on: macos-14
-    timeout-minutes: 30
+    timeout-minutes: 45
     permissions:
       contents: write
 
@@ -27,29 +38,105 @@ jobs:
         with:
           version: 0.16.0
 
+      # ── Optional: Apple Developer ID certificate import ──
+      # Skipped when secrets aren't set; the build still produces an ad-hoc
+      # signed dmg in that case.
+      - name: Import Apple Developer ID certificate
+        if: env.APPLE_DEVELOPER_ID_APPLICATION_CERT != ''
+        env:
+          APPLE_DEVELOPER_ID_APPLICATION_CERT: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERT }}
+          APPLE_DEVELOPER_ID_APPLICATION_CERT_PWD: ${{ secrets.APPLE_DEVELOPER_ID_APPLICATION_CERT_PWD }}
+          APPLE_KEYCHAIN_PASSWORD: ${{ secrets.APPLE_KEYCHAIN_PASSWORD }}
+        run: |
+          set -e
+          # Write the cert to a temp file
+          CERT_PATH="$RUNNER_TEMP/dev_id.p12"
+          echo "$APPLE_DEVELOPER_ID_APPLICATION_CERT" | base64 --decode > "$CERT_PATH"
+
+          # Create a dedicated temp keychain so we don't touch the runner's login keychain
+          KEYCHAIN_PATH="$RUNNER_TEMP/build.keychain-db"
+          security create-keychain -p "$APPLE_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 7200 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$APPLE_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import the cert + allow codesign access without prompt
+          security import "$CERT_PATH" -P "$APPLE_DEVELOPER_ID_APPLICATION_CERT_PWD" \
+            -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$APPLE_KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" >/dev/null
+          rm -f "$CERT_PATH"
+
+          # Record the identity name for later steps
+          IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" | grep "Developer ID Application" | head -1 | awk -F'"' '{print $2}')
+          echo "CODESIGN_IDENTITY=$IDENTITY" >> $GITHUB_ENV
+          echo "Imported identity: $IDENTITY"
+
       - name: Build .app bundle
         run: ./scripts/build-macos.sh
 
+      # ── If we have a Developer ID, re-sign properly (Hardened Runtime + Timestamp) ──
+      - name: Re-sign with Developer ID (Hardened Runtime + Timestamp)
+        if: env.CODESIGN_IDENTITY != ''
+        env:
+          CODESIGN_IDENTITY: ${{ env.CODESIGN_IDENTITY }}
+        run: |
+          set -e
+          codesign --force --deep --options runtime --timestamp \
+            --sign "$CODESIGN_IDENTITY" dist/Pumpkky.app
+          codesign -dvvv dist/Pumpkky.app 2>&1 | head -20
+
       - name: Pack dmg
         run: ./scripts/make-dmg.sh "${{ github.ref_name }}"
+
+      # ── Notarize: send dmg to Apple, wait, staple the ticket onto it ──
+      - name: Notarize dmg (xcrun notarytool submit --wait)
+        if: env.CODESIGN_IDENTITY != ''
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          set -e
+          DMG="dist/Pumpkky-${{ github.ref_name }}.dmg"
+          echo "==> Notarize: $DMG"
+          xcrun notarytool submit "$DMG" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_APP_SPECIFIC_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait
+          echo "==> Staple ticket onto dmg"
+          xcrun stapler staple "$DMG"
+          # The stable Pumpkky.dmg is a copy — restaple
+          cp "$DMG" dist/Pumpkky.dmg
 
       - name: Create GitHub Release & upload dmg (versioned + stable filename)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          NOTARIZED=""
+          if [ -n "${{ env.CODESIGN_IDENTITY }}" ]; then
+            NOTARIZED="**Signed with Developer ID + notarized by Apple.** 警告なしで起動します。"
+          else
+            NOTARIZED="**Ad-hoc signed (未 notarize).** 初回起動は付属の \`install.command\` をダブルクリック、または \`System Settings → Privacy & Security → Open Anyway\` で許可してください。"
+          fi
           gh release create "${{ github.ref_name }}" \
             --title "Pumpkky ${{ github.ref_name }}" \
-            --notes "Pumpkky ${{ github.ref_name }} — unsigned dmg.
+            --notes "Pumpkky ${{ github.ref_name }}
+
+          $NOTARIZED
 
           ## Install
-          1. DL the dmg below (or the stable name **Pumpkky.dmg**)
-          2. Open it → drag Pumpkky.app to /Applications
-          3. First launch: right-click → Open (Gatekeeper bypass)
+          1. ↓ \`Pumpkky.dmg\` (always-latest: <https://github.com/dngwkim0357-ai/Pumpkky/releases/latest/download/Pumpkky.dmg>) を DL
+          2. dmg を開く → \`Pumpkky.app\` を \`/Applications\` にドラッグ
+          3. 起動 (Notarize 版は警告なし、ad-hoc 版は付属 \`install.command\` をダブルクリック)
 
-          Stable URL (always latest):
-          https://github.com/dngwkim0357-ai/Pumpkky/releases/latest/download/Pumpkky.dmg
-
-          See https://dngwkim0357-ai.github.io/Pumpkky/ for full docs." \
+          詳細: <https://dngwkim0357-ai.github.io/Pumpkky/>" \
             --latest \
             "dist/Pumpkky-${{ github.ref_name }}.dmg" \
             "dist/Pumpkky.dmg"
+
+      - name: Clean up keychain
+        if: always() && env.CODESIGN_IDENTITY != ''
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/build.keychain-db"
+          security delete-keychain "$KEYCHAIN_PATH" 2>/dev/null || true
