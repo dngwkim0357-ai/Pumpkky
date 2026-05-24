@@ -7,24 +7,24 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <style>
 :root{
-  --orange:#e37e29;--orange-hi:#f08c33;--orange-deep:#b85f1d;
+  --orange:#e37e29;--orange-hi:#f08c33;
   --bg:#0c0c0d;--bg-section:#0f0f10;--panel:#1a1a1d;
   --line:#262629;--line-hi:#3a3a3f;
   --fg:#fafafa;--fg-2:#c0c0c5;--fg-3:#8a8a92;--fg-4:#5a5a62;
   --mono:"JetBrains Mono","SF Mono",ui-monospace,monospace;
-  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Hiragino Sans",system-ui,sans-serif;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Hiragino Sans",system-ui,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--sans);
      font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none;transition:color .15s}
+a{color:inherit;text-decoration:none;transition:color .15s,background .15s}
 code{font-family:var(--mono);font-size:0.9em;background:rgba(227,126,41,0.1);
      padding:1px 6px;border-radius:3px;color:var(--orange-hi)}
 pre{background:#000;border:1px solid var(--line);border-left:3px solid var(--orange);
     padding:18px 22px;border-radius:8px;overflow-x:auto;margin:16px 0;font-size:13px;
     line-height:1.7;font-family:var(--mono)}
 
-/* nav (index と統一) */
+/* nav */
 nav.top{position:sticky;top:0;background:rgba(12,12,13,0.72);
         backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
         border-bottom:1px solid rgba(255,255,255,0.06);z-index:100;height:60px}
@@ -37,67 +37,76 @@ nav.top .inner{display:flex;align-items:center;justify-content:space-between;
 .nav-links a{padding:8px 14px;border-radius:6px;color:var(--fg-2)}
 .nav-links a:hover{color:var(--fg);background:rgba(255,255,255,0.05)}
 
-main{max-width:880px;margin:0 auto;padding:80px 28px}
+main{max-width:980px;margin:0 auto;padding:80px 28px}
 .eyebrow{font-family:var(--mono);font-size:12px;color:var(--orange);
          letter-spacing:0.06em;text-transform:uppercase;margin-bottom:18px;text-align:center}
 h1{font-size:clamp(40px,5vw,64px);font-weight:800;letter-spacing:-2px;
    line-height:1.05;margin-bottom:14px;text-align:center}
-p.sub{font-size:18px;color:var(--fg-3);max-width:560px;margin:0 auto 56px;
+p.sub{font-size:17px;color:var(--fg-3);max-width:600px;margin:0 auto 56px;
       line-height:1.55;text-align:center}
 
-/* OS grid */
-.os-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-         gap:18px;margin-bottom:48px}
-.os-card{background:var(--panel);border:1px solid var(--line);
-         border-radius:14px;padding:28px 24px;display:flex;flex-direction:column;
-         transition:border-color .15s,transform .15s;position:relative;overflow:hidden}
-.os-card.available{border-color:rgba(227,126,41,0.4)}
-.os-card.available:hover{border-color:var(--orange);transform:translateY(-2px)}
-.os-card.coming{opacity:0.7}
-.os-card .badge{position:absolute;top:14px;right:14px;
-                font-family:var(--mono);font-size:10px;
-                padding:3px 8px;border-radius:999px;letter-spacing:0.05em}
-.os-card.available .badge{background:rgba(227,126,41,0.15);color:var(--orange);
-                          border:1px solid rgba(227,126,41,0.3)}
-.os-card.coming .badge{background:rgba(255,255,255,0.05);color:var(--fg-3);
-                       border:1px solid var(--line-hi)}
-.os-card .icon{font-size:32px;margin-bottom:16px;color:var(--orange);
-               line-height:1;display:flex;align-items:center;gap:10px}
-.os-card .icon svg{width:36px;height:36px}
-.os-card h2{font-size:22px;font-weight:700;letter-spacing:-0.5px;
-            margin-bottom:6px;color:var(--fg)}
-.os-card .meta{font-family:var(--mono);font-size:12px;color:var(--fg-4);
-               margin-bottom:14px}
-.os-card .desc{font-size:14px;color:var(--fg-3);margin-bottom:20px;flex:1;line-height:1.5}
-.os-card .cta{margin-top:auto}
-.os-card .btn{display:inline-flex;align-items:center;gap:8px;
-              padding:11px 20px;border-radius:8px;font-weight:600;
-              font-size:14px;transition:all .15s;cursor:pointer;width:100%;
-              justify-content:center;white-space:nowrap}
-.os-card .btn-primary{background:var(--orange);color:#1a0d05}
-.os-card .btn-primary:hover{background:var(--orange-hi);color:#1a0d05}
-.os-card .btn-disabled{background:transparent;color:var(--fg-4);
-                       border:1px dashed var(--line-hi);cursor:not-allowed}
-.os-card .eta{font-family:var(--mono);font-size:11px;color:var(--fg-4);
-              margin-top:8px;text-align:center}
+/* ── OS spec table (4-row × 3-col vertical layout) ── */
+.spec{display:grid;grid-template-columns:repeat(3,1fr);gap:0;
+      background:var(--panel);border:1px solid var(--line);
+      border-radius:14px;overflow:hidden;margin-bottom:32px}
+.spec .col{padding:32px 22px;border-right:1px solid var(--line);
+           display:flex;flex-direction:column;align-items:center;text-align:center;
+           transition:background .15s}
+.spec .col:last-child{border-right:none}
+.spec .col.available{background:linear-gradient(180deg,
+                       rgba(227,126,41,0.06) 0%,transparent 60%)}
+.spec .col.available:hover{background:linear-gradient(180deg,
+                             rgba(227,126,41,0.10) 0%,transparent 60%)}
+.spec .col.coming{opacity:0.7}
 
-/* git clone section */
+.spec .row-icon{height:60px;display:flex;align-items:center;justify-content:center;
+                margin-bottom:6px}
+.spec .row-icon svg{width:48px;height:48px;color:var(--fg-2)}
+.spec .col.available .row-icon svg{color:var(--orange)}
+
+.spec .row-name{font-size:22px;font-weight:700;letter-spacing:-0.4px;
+                color:var(--fg);margin-bottom:18px;padding-bottom:18px;
+                border-bottom:1px solid var(--line);width:100%}
+
+.spec .row-spec{font-family:var(--mono);font-size:12px;color:var(--fg-3);
+                line-height:1.7;margin-bottom:18px;min-height:54px;
+                display:flex;flex-direction:column;justify-content:center}
+.spec .row-spec .label{color:var(--fg-4);font-size:10px;letter-spacing:0.1em;
+                       text-transform:uppercase;margin-bottom:6px}
+
+.spec .row-status{margin-bottom:18px;font-family:var(--mono);font-size:13px}
+.spec .col.available .row-status{color:var(--orange);font-weight:600}
+.spec .col.coming .row-status{color:var(--fg-4)}
+.spec .row-status::before{content:"● ";font-size:9px;vertical-align:middle}
+
+.spec .row-cta{margin-top:auto;width:100%;padding-top:8px}
+.spec .row-cta a,.spec .row-cta span{display:block;padding:11px 14px;
+                                      border-radius:8px;font-size:13px;font-weight:600;
+                                      text-align:center;white-space:nowrap}
+.spec .row-cta .btn-primary{background:var(--orange);color:#1a0d05}
+.spec .row-cta .btn-primary:hover{background:var(--orange-hi);color:#1a0d05}
+.spec .row-cta .btn-disabled{background:transparent;color:var(--fg-4);
+                              border:1px dashed var(--line-hi);cursor:not-allowed}
+.spec .row-cta .eta{margin-top:8px;color:var(--fg-4);font-family:var(--mono);
+                    font-size:11px;display:block}
+
+/* ── Git clone section ── */
 .git-section{margin-top:64px;padding-top:48px;border-top:1px solid var(--line)}
-.git-section h2{font-size:24px;font-weight:700;margin-bottom:8px;text-align:center}
+.git-section .lab{text-align:center;margin-bottom:8px}
+.git-section h2{font-size:24px;font-weight:700;text-align:center;margin-bottom:8px}
 .git-section p.sub2{color:var(--fg-3);max-width:520px;margin:0 auto 24px;
                     text-align:center;font-size:15px}
 
-/* note / warn */
+/* ── Note / install steps ── */
 .note{background:#1e1610;border-left:3px solid var(--orange);
       padding:14px 18px;border-radius:6px;margin:28px 0;
       color:var(--fg-3);font-size:14px;line-height:1.6}
 .note strong{color:var(--orange)}
-
-/* install steps */
 .steps{background:var(--panel);border:1px solid var(--line);
        border-radius:12px;padding:24px 28px;margin:32px 0}
-.steps h3{font-size:16px;color:var(--orange);margin-bottom:14px;
-          font-family:var(--mono);font-weight:600;letter-spacing:0.03em}
+.steps h3{font-size:14px;color:var(--orange);margin-bottom:14px;
+          font-family:var(--mono);font-weight:600;letter-spacing:0.05em;
+          text-transform:uppercase}
 .steps ol{padding-left:22px;color:var(--fg-3);font-size:14px;line-height:1.9}
 .steps ol li strong{color:var(--fg)}
 
@@ -106,7 +115,15 @@ footer{text-align:center;padding:48px 28px;color:var(--fg-4);
 footer a{color:var(--fg-3)}
 footer a:hover{color:var(--orange)}
 
-@media (max-width:560px){
+/* responsive */
+@media (max-width:720px){
+  .spec{grid-template-columns:1fr;gap:0}
+  .spec .col{border-right:none;border-bottom:1px solid var(--line)}
+  .spec .col:last-child{border-bottom:none}
+  .spec .row-name{padding-bottom:14px;margin-bottom:14px}
+  .spec .row-spec{min-height:auto}
+}
+@media (max-width:520px){
   .nav-links a{font-size:13px;padding:6px 10px}
   main{padding:60px 18px}
 }
@@ -131,83 +148,91 @@ footer a:hover{color:var(--orange)}
   <h1>OS を選ぶ。</h1>
   <p class="sub">
     macOS が今すぐ動きます。Windows と Linux は開発中です。
-    どの OS でも、ソースから build したい方は下の Git Clone をどうぞ。
   </p>
 
-  <!-- 3 OS cards -->
-  <div class="os-grid">
+  <!-- ── 3-column spec table ── -->
+  <div class="spec">
 
-    <!-- macOS — available -->
-    <div class="os-card available">
-      <span class="badge">● Available</span>
-      <div class="icon">
+    <!-- ── macOS ── -->
+    <div class="col available">
+      <div class="row-icon">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 12.04c-.03-2.86 2.34-4.24 2.45-4.3-1.34-1.95-3.42-2.22-4.16-2.25-1.77-.18-3.46 1.04-4.36 1.04-.91 0-2.3-1.02-3.78-.99-1.94.03-3.74 1.13-4.74 2.86-2.02 3.51-.52 8.7 1.45 11.55.96 1.4 2.1 2.96 3.59 2.9 1.44-.06 1.99-.93 3.73-.93 1.74 0 2.23.93 3.76.9 1.55-.03 2.53-1.41 3.48-2.82 1.1-1.62 1.55-3.19 1.58-3.27-.04-.02-3.03-1.17-3.06-4.63zM14.22 4.18c.8-.97 1.34-2.31 1.19-3.65-1.15.05-2.55.77-3.37 1.73-.74.86-1.39 2.23-1.21 3.54 1.28.1 2.59-.65 3.39-1.62z"/></svg>
       </div>
-      <h2>macOS</h2>
-      <p class="meta">arm64 · 13 Ventura+</p>
-      <p class="desc">v0.1.0-mvp / ~425 KB / 未署名 dmg。初回起動は <strong>右クリック → 開く</strong> で。</p>
-      <div class="cta">
-        <a class="btn btn-primary"
+      <div class="row-name">macOS</div>
+      <div class="row-spec">
+        <span class="label">対応機種</span>
+        Apple Silicon (arm64)<br>macOS 13 Ventura 以降
+      </div>
+      <div class="row-status">64-bit · v0.1.0-mvp</div>
+      <div class="row-cta">
+        <a class="btn-primary"
            href="https://github.com/dngwkim0357-ai/Pumpkky/releases/latest/download/Pumpkky.dmg">
           ↓ Pumpkky.dmg
         </a>
+        <span class="eta">~425 KB · unsigned dmg</span>
       </div>
     </div>
 
-    <!-- Windows — coming -->
-    <div class="os-card coming">
-      <span class="badge">In development</span>
-      <div class="icon">
+    <!-- ── Windows ── -->
+    <div class="col coming">
+      <div class="row-icon">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.7L10.5 4.7v7.3H3V5.7zm0 12.6V13h7.5v7.3L3 18.3zm8.5-13.7L21 3v9h-9.5V4.6zM21 13v9l-9.5-1.3V13H21z"/></svg>
       </div>
-      <h2>Windows</h2>
-      <p class="meta">v2.0 — WinUI3</p>
-      <p class="desc">core (Zig) は OS 共通設計。UI 層は Windows native の WinUI3 で v2.0 リリース予定。</p>
-      <div class="cta">
-        <span class="btn btn-disabled">準備中</span>
-        <p class="eta">ETA 2027 (M18-M24)</p>
+      <div class="row-name">Windows</div>
+      <div class="row-spec">
+        <span class="label">対応機種</span>
+        x64 / arm64<br>Windows 11 22H2 以降 (予定)
+      </div>
+      <div class="row-status">開発中 · v2.0 WinUI3</div>
+      <div class="row-cta">
+        <span class="btn-disabled">準備中</span>
+        <span class="eta">ETA 2027 (M18-M24)</span>
       </div>
     </div>
 
-    <!-- Linux — coming -->
-    <div class="os-card coming">
-      <span class="badge">In development</span>
-      <div class="icon">
+    <!-- ── Linux ── -->
+    <div class="col coming">
+      <div class="row-icon">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14.62 8.35c-.42-1.13-.62-2.05-.62-2.85 0-1.93-.78-3.5-2.5-3.5-1.71 0-2.5 1.57-2.5 3.5 0 .8-.2 1.72-.62 2.85C7.55 9.91 6.4 11.83 6 13.5c-.4 1.67-.3 3.5.5 4.92.8 1.42 2.32 2.58 5 2.58 2.69 0 4.2-1.16 5-2.58.8-1.42.9-3.25.5-4.92-.4-1.67-1.55-3.59-2.38-5.15zM10.5 6.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5S9 8.83 9 8s.67-1.5 1.5-1.5zm3 0c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5-1.5-.67-1.5-1.5.67-1.5 1.5-1.5z"/></svg>
       </div>
-      <h2>Linux</h2>
-      <p class="meta">v1.0 — GTK4</p>
-      <p class="desc">Ghostty の GTK4 layer に寄せて、Linux native UI を v1.0 で対応。macOS 後の最優先 platform。</p>
-      <div class="cta">
-        <span class="btn btn-disabled">準備中</span>
-        <p class="eta">ETA 2027 Q1 (M12-M18)</p>
+      <div class="row-name">Linux</div>
+      <div class="row-spec">
+        <span class="label">対応機種</span>
+        x64 / arm64<br>GTK4 4.10+ (予定)
+      </div>
+      <div class="row-status">開発中 · v1.0 GTK4</div>
+      <div class="row-cta">
+        <span class="btn-disabled">準備中</span>
+        <span class="eta">ETA 2027 Q1 (M12-M18)</span>
       </div>
     </div>
 
   </div>
 
-  <!-- Git Clone section -->
+  <!-- ── Git clone ── -->
   <section class="git-section">
-    <h2>または、ソースから build</h2>
+    <p class="eyebrow lab">// Or build it yourself</p>
+    <h2>ソースから build</h2>
     <p class="sub2">
       OS を問わず誰でも。binary を信用しない方も、開発に参加したい方も、こちらへ。
     </p>
-<pre><span style="color:var(--fg-4)"># 必要: macOS 13+、Xcode (full)、brew install zig</span>
+<pre><span style="color:var(--fg-4)"># 必要: macOS 13+ / Xcode (full) / brew install zig</span>
 git clone --recursive https://github.com/dngwkim0357-ai/Pumpkky
 cd Pumpkky
 ./scripts/build-macos.sh
 open dist/Pumpkky.app</pre>
     <div class="note">
       <strong>Ghostty submodule</strong> と <strong>tree-sitter</strong> を含むので
-      <code>--recursive</code> 必須。OS 別 build script は今後追加予定 (現在は build-macos.sh のみ)。
+      <code>--recursive</code> 必須。<br>
+      Linux / Windows 用 build script は v1.0 / v2.0 で追加予定 (現在は <code>build-macos.sh</code> のみ)。
     </div>
   </section>
 
-  <!-- macOS install steps -->
+  <!-- ── macOS install steps ── -->
   <div class="steps">
     <h3>// macOS インストール手順</h3>
     <ol>
-      <li>上の <strong>↓ Pumpkky.dmg</strong> ボタンで dmg を DL</li>
+      <li>上の表で macOS の <strong>↓ Pumpkky.dmg</strong> をクリック</li>
       <li>dmg を開く → <strong>Pumpkky.app</strong> を <code>/Applications</code> にドラッグ</li>
       <li>初回起動 — <strong>右クリック → 開く</strong> → ダイアログで「開く」 (Gatekeeper bypass、未署名のため)</li>
       <li>2 回目以降は普通に double-click</li>
@@ -215,9 +240,10 @@ open dist/Pumpkky.app</pre>
   </div>
 
   <div class="note">
-    <strong>もし silent failure する場合</strong> (macOS 15.2+ で報告あり):<br>
-<code style="display:block;margin-top:8px;padding:10px 14px;background:#000;border-radius:4px">xattr -cr /Applications/Pumpkky.app && open /Applications/Pumpkky.app</code>
-    で quarantine 属性を強制削除してから再起動。詳細は <a href="docs.html#troubleshoot" style="color:var(--orange)">Docs のトラブルシュート →</a>
+    <strong>もし silent failure する場合</strong> (macOS 15.2+ で報告あり):
+<code style="display:block;margin-top:10px;padding:10px 14px;background:#000;border-radius:4px;color:var(--fg-2)">xattr -cr /Applications/Pumpkky.app &amp;&amp; open /Applications/Pumpkky.app</code>
+    で quarantine 属性を強制削除してから再起動。詳細は
+    <a href="docs.html#troubleshoot" style="color:var(--orange)">Docs のトラブルシュート →</a>
   </div>
 
 </main>
