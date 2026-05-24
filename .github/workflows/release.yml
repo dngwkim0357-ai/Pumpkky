@@ -33,14 +33,23 @@ jobs:
       - name: Pack dmg
         run: ./scripts/make-dmg.sh "${{ github.ref_name }}"
 
-      - name: Create GitHub Release & upload dmg
+      - name: Create GitHub Release & upload dmg (versioned + stable filename)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release create "${{ github.ref_name }}" \
-            --title "${{ github.ref_name }}" \
-            --notes "Ghostty Code Editor Studio ${{ github.ref_name }} — unsigned dmg.
+            --title "Pumpkky ${{ github.ref_name }}" \
+            --notes "Pumpkky ${{ github.ref_name }} — unsigned dmg.
 
-          See README.md for Gatekeeper bypass instructions on first launch." \
-            --draft \
-            "dist/Ghostty-Editor-${{ github.ref_name }}.dmg"
+          ## Install
+          1. DL the dmg below (or the stable name **Pumpkky.dmg**)
+          2. Open it → drag Pumpkky.app to /Applications
+          3. First launch: right-click → Open (Gatekeeper bypass)
+
+          Stable URL (always latest):
+          https://github.com/dngwkim0357-ai/Pumpkky/releases/latest/download/Pumpkky.dmg
+
+          See https://dngwkim0357-ai.github.io/Pumpkky/ for full docs." \
+            --latest \
+            "dist/Pumpkky-${{ github.ref_name }}.dmg" \
+            "dist/Pumpkky.dmg"

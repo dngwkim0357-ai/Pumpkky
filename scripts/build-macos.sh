@@ -55,22 +55,23 @@ test -x "$EXE" || {
     exit 1
 }
 
-echo "==> [4/4] Pack into Ghostty-Editor.app (unsigned)"
-APP="$ROOT/dist/Ghostty-Editor.app"
-rm -rf "$APP"
+echo "==> [4/4] Pack into Pumpkky.app (unsigned)"
+APP="$ROOT/dist/Pumpkky.app"
+# Remove any old bundle names too so /Applications doesn't end up with both
+rm -rf "$APP" "$ROOT/dist/Ghostty-Editor.app"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$EXE" "$APP/Contents/MacOS/ghostty-editor"
+cp "$EXE" "$APP/Contents/MacOS/pumpkky"
 cat > "$APP/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleExecutable</key><string>ghostty-editor</string>
-    <key>CFBundleIdentifier</key><string>dev.ghostty-editor.app</string>
-    <key>CFBundleName</key><string>Ghostty Editor</string>
-    <key>CFBundleDisplayName</key><string>Ghostty Editor</string>
-    <key>CFBundleVersion</key><string>0.0.1</string>
-    <key>CFBundleShortVersionString</key><string>0.0.1</string>
+    <key>CFBundleExecutable</key><string>pumpkky</string>
+    <key>CFBundleIdentifier</key><string>com.pumpkky.app</string>
+    <key>CFBundleName</key><string>Pumpkky</string>
+    <key>CFBundleDisplayName</key><string>Pumpkky</string>
+    <key>CFBundleVersion</key><string>0.1.0</string>
+    <key>CFBundleShortVersionString</key><string>0.1.0</string>
     <key>CFBundlePackageType</key><string>APPL</string>
     <key>LSMinimumSystemVersion</key><string>13.0</string>
     <key>NSHighResolutionCapable</key><true/>
@@ -78,6 +79,15 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 </dict>
 </plist>
 PLIST
+
+# Ad-hoc codesign so Gatekeeper recognises the binary as "signed but
+# from an unknown developer" instead of "damaged". This works without
+# an Apple Developer ID and is enough to bypass the silent-fail case
+# we hit on macOS 15.2+ with untouched binaries from a dmg.
+echo "    Ad-hoc codesign (no Developer ID, no notarization)"
+codesign --force --deep --sign - "$APP" >/dev/null 2>&1 || {
+    echo "    WARNING: codesign failed — the binary may still launch but Gatekeeper might block silently."
+}
 
 echo ""
 echo "✅ Build complete."

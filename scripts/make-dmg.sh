@@ -16,23 +16,33 @@ set -eu
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 VERSION="${1:-dev}"
 
-APP="$ROOT/dist/Ghostty-Editor.app"
-DMG="$ROOT/dist/Ghostty-Editor-$VERSION.dmg"
+APP="$ROOT/dist/Pumpkky.app"
+DMG_VERSIONED="$ROOT/dist/Pumpkky-$VERSION.dmg"
+DMG_LATEST="$ROOT/dist/Pumpkky.dmg"   # 固定名: GitHub releases/latest/download/Pumpkky.dmg で永続リンクできる
 
 test -d "$APP" || {
     echo "ERROR: $APP not found. Run ./scripts/build-macos.sh first."
     exit 1
 }
 
-echo "==> Packing $APP into $DMG"
-rm -f "$DMG"
+# Re-apply ad-hoc codesign in case the .app was modified after build.
+echo "==> Ensure ad-hoc codesign on $APP"
+codesign --force --deep --sign - "$APP" >/dev/null 2>&1 || true
+
+echo "==> Packing $APP into dmg ($VERSION)"
+rm -f "$DMG_VERSIONED" "$DMG_LATEST"
 
 # Create a read-write dmg, then convert to read-only / compressed.
-TMP_DMG="$ROOT/dist/.tmp-ghostty.dmg"
-hdiutil create -srcfolder "$APP" -volname "Ghostty Editor" \
+TMP_DMG="$ROOT/dist/.tmp-pumpkky.dmg"
+hdiutil create -srcfolder "$APP" -volname "Pumpkky" \
     -fs HFS+ -fsargs "-c c=64,a=16,e=16" \
     -format UDRW -size 200m "$TMP_DMG" >/dev/null
-hdiutil convert "$TMP_DMG" -format UDZO -o "$DMG" >/dev/null
+hdiutil convert "$TMP_DMG" -format UDZO -o "$DMG_VERSIONED" >/dev/null
 rm -f "$TMP_DMG"
 
-echo "✅ DMG created: $DMG ($(du -h "$DMG" | cut -f1))"
+# Provide a stable, version-less symlink/copy so download URLs never break.
+cp "$DMG_VERSIONED" "$DMG_LATEST"
+
+echo "✅ DMG created:"
+echo "   versioned: $DMG_VERSIONED ($(du -h "$DMG_VERSIONED" | cut -f1))"
+echo "   latest:    $DMG_LATEST    ($(du -h "$DMG_LATEST" | cut -f1))"
